@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-function Dropdown({ options, handleSelect, value }: any) {
+function Dropdown({ options, handleSelect, value, placeHolder }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const refEl = useRef();
 
@@ -44,13 +44,13 @@ function Dropdown({ options, handleSelect, value }: any) {
   });
 
   return (
-    <div ref={refEl} className="w-48 relative">
+    <div ref={refEl} className="w-40 relative z-10">
       <div
-        className="flex justify-between items-center 
+        className="flex justify-center items-center 
         cursor-pointer border rounded p-3 shadow bg-white w-full"
         onClick={handleClick}
       >
-        {value?.name || "Select..."}
+        {value?.name || placeHolder}
       </div>
       {isOpen && (
         <div className="absolute top-full border rounded p-3 shadow bg-white w-full">

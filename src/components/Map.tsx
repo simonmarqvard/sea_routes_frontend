@@ -1,16 +1,19 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+} from "react-leaflet";
 
-const Map = () => {
-  const location = [55.676098, 12.568337];
+const Map = ({ routeCoordinates }) => {
+  const latLng = routeCoordinates.map((coord) => [coord[1], coord[0]]);
+  let location = [55.676098, 12.568337];
+
   return (
-    <MapContainer center={location} zoom={13} style={{ height: "400px" }}>
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <Marker position={[51.505, -0.09]}>
-        <Popup>Note: Pop data can be added here</Popup>
-      </Marker>
+    <MapContainer center={location} zoom={2} style={{ height: "400px" }}>
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <Polyline positions={latLng} />
     </MapContainer>
   );
 };
