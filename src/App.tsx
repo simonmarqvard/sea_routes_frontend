@@ -11,6 +11,7 @@ function App() {
   const [routeTextInfo, setRouteTextInfo] = useState({});
   const [ports, setPorts] = useState([]);
   const [vessels, setVessels] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +25,7 @@ function App() {
         setVessels(vessels);
       } catch (err) {
         console.error("Error fetching data:", err);
+        setError(err);
       }
     };
     fetchData();
@@ -31,32 +33,35 @@ function App() {
 
   const handleShipSelection = (ship) => {
     setShipSelection(ship);
-    // console.log(ship);
   };
 
   const handleDestination = (destination) => {
     setDestination(destination);
-    // console.log(destination);
   };
 
   const fetchData = async () => {
-    const coordinates = {
-      ship: {
-        lat: shipSelection.latitude,
-        lng: shipSelection.longitude,
-      },
-      port: {
-        lat: destination.latitude,
-        lng: destination.longitude,
-      },
-    };
+    try {
+      const coordinates = {
+        ship: {
+          lat: shipSelection.latitude,
+          lng: shipSelection.longitude,
+        },
+        port: {
+          lat: destination.latitude,
+          lng: destination.longitude,
+        },
+      };
 
-    const { data } = await axios.post(
-      "http://localhost:3000/getRoute",
-      coordinates
-    );
-    setRouteCoordinates(data.route);
-    setRouteTextInfo(data.routeInfo);
+      const { data } = await axios.post(
+        "http://localhost:3000/getRoute",
+        coordinates
+      );
+
+      setRouteCoordinates(data.route);
+      setRouteTextInfo(data.routeInfo);
+    } catch (err) {
+      setError(err);
+    }
   };
 
   const disabled = !shipSelection || !destination;
@@ -78,20 +83,24 @@ function App() {
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <div className="flex">
-            <Dropdown
-              value={shipSelection}
-              options={vessels}
-              handleSelect={handleShipSelection}
-              placeHolder={"Select A Vessel..."}
-            />
-            <Dropdown
-              value={destination}
-              options={ports}
-              handleSelect={handleDestination}
-              placeHolder={"Select A Port..."}
-            />
-          </div>
+          {!error ? (
+            <div className="flex">
+              <Dropdown
+                value={shipSelection}
+                options={vessels}
+                handleSelect={handleShipSelection}
+                placeHolder={"Select A Vessel..."}
+              />
+              <Dropdown
+                value={destination}
+                options={ports}
+                handleSelect={handleDestination}
+                placeHolder={"Select A Port..."}
+              />
+            </div>
+          ) : (
+            <p>We are experiencing some difficulties</p>
+          )}
           <div>
             <button
               className={`bg-blue-400 p-3 m-2 border w-80 border-green-700 hover:bg-blue-600 shadow-sm ${
