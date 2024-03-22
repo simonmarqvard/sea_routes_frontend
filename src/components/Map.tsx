@@ -4,16 +4,11 @@ import {
   Marker,
   Popup,
   Polyline,
-  Tooltip,
 } from "react-leaflet";
 
 const Map = ({ routeCoordinates, shipSelection, destination }) => {
   const latLng = routeCoordinates.map((coord) => [coord[1], coord[0]]);
   let location = [55.676098, 12.568337];
-
-  //   const shipCoordinates =
-
-  console.log(shipSelection);
 
   return (
     <MapContainer center={location} zoom={2} style={{ height: "400px" }}>

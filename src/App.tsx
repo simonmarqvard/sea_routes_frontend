@@ -65,18 +65,17 @@ function App() {
     <div className="flex flex-col grid grid-cols-12">
       <div className="col-span-5 border">
         <div className="flex justify-center">
-          <div className="p-2 mt-6 text-xl">Vessel Routing</div>
+          <div className="p-2 mt-6 text-2xl">Vessel Routing</div>
         </div>
         <div className="p-4 m-4">
-          Det er en kendsgerning, at man bliver distraheret af læsbart indhold
-          på en side, når man betragter dens layout. Meningen med at bruge Lorem
-          Ipsum er, at teksten indeholder mere eller mindre almindelig
-          tekstopbygning i modsætning til "Tekst her - og mere tekst her", mens
-          det samtidigt ligner almindelig tekst. Mange layoutprogrammer og
-          webdesignere bruger Lorem Ipsum som fyldtekst. En søgning på Lorem
-          Ipsum afslører mange websider, som stadig er på udviklingsstadiet. Der
-          har været et utal af variationer, som er opstået enten på grund af
-          fejl og andre gange med vilje (som blandt andet et resultat af humor).
+          Vessel routing is a routing tool that enables a user to select a ship
+          and a destination port and find the optimal sea route. When locations
+          are selected in the below dropdown it will display your selection on
+          the map along with the optimal sea route between the selected
+          locations.
+          <div className="mt-3">
+            Make your selection from the dropdown to get started:
+          </div>
         </div>
         <div className="flex flex-col items-center">
           <div className="flex">
