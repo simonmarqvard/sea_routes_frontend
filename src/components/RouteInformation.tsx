@@ -1,7 +1,20 @@
 import prettyMilliseconds from "pretty-ms";
+import type { RouteTextInfo } from "../api/RouteTextInfo";
+import type { Ship } from "../api/Ship";
+import type { Destination } from "../api/Destination";
 
-const RouteInformation = ({ routeTextInfo, shipSelection, destination }) => {
-  const { duration } = routeTextInfo;
+interface RouteInformationProps {
+  routeTextInfo: RouteTextInfo | {};
+  shipSelection: Ship | null;
+  destination: Destination | null;
+}
+
+const RouteInformation = ({
+  routeTextInfo,
+  shipSelection,
+  destination,
+}: RouteInformationProps) => {
+  const { duration } = routeTextInfo as RouteTextInfo;
 
   const showShipInfo = shipSelection && (
     <div className="flex flex-col justify-center items-center p-2">

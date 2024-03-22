@@ -3,14 +3,17 @@ import Dropdown from "./components/Dropdown";
 import Map from "./components/Map";
 import RouteInformation from "./components/RouteInformation";
 import axios from "axios";
+import type { Ship } from "./api/Ship";
+import type { Destination } from "./api/Destination";
+import type { RouteTextInfo } from "./api/RouteTextInfo";
 
 function App() {
-  const [shipSelection, setShipSelection] = useState(null);
-  const [destination, setDestination] = useState(null);
-  const [routeCoordinates, setRouteCoordinates] = useState([]);
-  const [routeTextInfo, setRouteTextInfo] = useState({});
-  const [ports, setPorts] = useState([]);
-  const [vessels, setVessels] = useState([]);
+  const [shipSelection, setShipSelection] = useState<Ship | null>(null);
+  const [destination, setDestination] = useState<Destination | null>(null);
+  const [routeCoordinates, setRouteCoordinates] = useState<number[][]>([]);
+  const [routeTextInfo, setRouteTextInfo] = useState<RouteTextInfo | {}>({});
+  const [ports, setPorts] = useState<Destination[]>([]);
+  const [vessels, setVessels] = useState<Ship[]>([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -31,15 +34,19 @@ function App() {
     fetchData();
   }, []);
 
-  const handleShipSelection = (ship) => {
+  const handleShipSelection = (ship: Ship) => {
     setShipSelection(ship);
   };
 
-  const handleDestination = (destination) => {
+  const handleDestination = (destination: Destination) => {
     setDestination(destination);
   };
 
   const fetchData = async () => {
+    if (!shipSelection || !destination) {
+      return;
+    }
+
     try {
       const coordinates = {
         ship: {

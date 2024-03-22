@@ -1,25 +1,39 @@
 import { useState, useEffect, useRef } from "react";
+import type { Ship } from "../api/Ship";
+import type { Destination } from "../api/Destination";
 
-function Dropdown({ options, handleSelect, value, placeHolder }: any) {
-  const [isOpen, setIsOpen] = useState(false);
-  const refEl = useRef();
+interface DropdownProps {
+  options: Destination[];
+  handleSelect: (ship: Ship) => void;
+  value: Ship | Destination | null;
+  placeHolder: string;
+}
 
-  const handleClick = () => {
+function Dropdown({
+  options,
+  handleSelect,
+  value,
+  placeHolder,
+}: DropdownProps) {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const refEl = useRef<HTMLDivElement>(null);
+
+  const handleClick = (): void => {
     setIsOpen(!isOpen);
   };
 
-  const onSelect = (ship) => {
+  const onSelect = (ship: Ship) => {
     handleSelect(ship);
     setIsOpen(false);
   };
 
   useEffect(() => {
-    const handler = (event) => {
+    const handler = (event: MouseEvent) => {
       if (!refEl.current) {
         return;
       }
 
-      if (!refEl.current.contains(event.target)) {
+      if (!refEl.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };

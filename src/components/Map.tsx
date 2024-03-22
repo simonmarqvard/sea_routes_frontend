@@ -5,13 +5,34 @@ import {
   Popup,
   Polyline,
 } from "react-leaflet";
+import type { Ship } from "../api/Ship";
+import type { Destination } from "../api/Destination";
 
-const Map = ({ routeCoordinates, shipSelection, destination }) => {
-  const latLng = routeCoordinates.map((coord) => [coord[1], coord[0]]);
-  let location = [55.676098, 12.568337];
+interface RouteCoordinates {
+  routeCoordinates: number[][];
+  shipSelection: Ship | null;
+  destination: Destination | null;
+}
+
+const Map = ({
+  routeCoordinates,
+  shipSelection,
+  destination,
+}: RouteCoordinates) => {
+  const latLng: number[][] = routeCoordinates.map((coord) => [
+    coord[1],
+    coord[0],
+  ]);
+
+  //set central africa to center
+  const location: number[] = [15.446105, 18.7350005];
 
   return (
-    <MapContainer center={location} zoom={2} style={{ height: "400px" }}>
+    <MapContainer
+      center={[location[0], location[1]]}
+      zoom={1.5}
+      style={{ height: "400px" }}
+    >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Polyline positions={latLng} />
       {shipSelection && (
