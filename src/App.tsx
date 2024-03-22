@@ -31,12 +31,12 @@ function App() {
 
   const handleShipSelection = (ship) => {
     setShipSelection(ship);
-    console.log(ship);
+    // console.log(ship);
   };
 
   const handleDestination = (destination) => {
     setDestination(destination);
-    console.log(destination);
+    // console.log(destination);
   };
 
   const fetchData = async () => {
@@ -107,8 +107,16 @@ function App() {
         </div>
       </div>
       <div className="col-span-7 h-screen	">
-        <Map routeCoordinates={routeCoordinates} />
-        <RouteInformation routeTextInfo={routeTextInfo} />
+        <Map
+          routeCoordinates={routeCoordinates}
+          shipSelection={shipSelection}
+          destination={destination}
+        />
+        <RouteInformation
+          routeTextInfo={routeTextInfo}
+          shipSelection={shipSelection}
+          destination={destination}
+        />
       </div>
     </div>
   );
