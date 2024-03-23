@@ -19,6 +19,7 @@ const Map = ({
   shipSelection,
   destination,
 }: RouteCoordinates) => {
+  //Convert lng-lat from searoutes to lat-lng used by leaflet
   const latLng: number[][] = routeCoordinates.map((coord) => [
     coord[1],
     coord[0],

@@ -27,6 +27,7 @@ function Dropdown({
     setIsOpen(false);
   };
 
+  //close dropdown when you click outside it
   useEffect(() => {
     const handler = (event: MouseEvent) => {
       if (!refEl.current) {
