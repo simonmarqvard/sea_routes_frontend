@@ -16,6 +16,7 @@ function App() {
   const [vessels, setVessels] = useState<Ship[]>([]);
   const [error, setError] = useState(null);
 
+  //Fetch initial db data for dropdown selection
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -138,3 +139,9 @@ function App() {
 }
 
 export default App;
+
+//Todos:
+//Fetch data function could be combined to reusable function
+//Animate Path
+//"Cards" in routeInformation could be reusable components
+//Fix positioning of points in rare instances
