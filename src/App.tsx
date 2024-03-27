@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Dropdown from "./components/Dropdown";
 import Map from "./components/Map";
 import RouteInformation from "./components/RouteInformation";
@@ -6,41 +6,52 @@ import axios from "axios";
 import type { Ship } from "./api/Ship";
 import type { Destination } from "./api/Destination";
 import type { RouteTextInfo } from "./api/RouteTextInfo";
+import { useQuery } from "@tanstack/react-query";
+import { DNA } from "react-loader-spinner";
 
 function App() {
   const [shipSelection, setShipSelection] = useState<Ship | null>(null);
   const [destination, setDestination] = useState<Destination | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<number[][]>([]);
   const [routeTextInfo, setRouteTextInfo] = useState<RouteTextInfo | {}>({});
-  const [ports, setPorts] = useState<Destination[]>([]);
-  const [vessels, setVessels] = useState<Ship[]>([]);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<false | true>(false);
 
-  //Fetch initial db data for dropdown selection
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchDbOptions = await axios.get(
-          "http://localhost:3000/dataOptions"
-        );
+  const fetchOptions = async (protocol: string, url: string, postData = {}) => {
+    try {
+      let data;
 
-        const { ports, vessels } = fetchDbOptions.data;
-        setPorts(ports);
-        setVessels(vessels);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        setError(err);
+      if (protocol === "GET") {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 2000);
+        });
+        data = await axios.get(url);
+      } else if (protocol === "POST") {
+        data = await axios.post(url, postData);
       }
-    };
-    fetchData();
-  }, []);
+
+      if (!data) {
+        throw new Error("no data returned");
+      }
+
+      return data.data;
+    } catch (error) {
+      setError(true);
+    }
+  };
+
+  const { data: dbOptions, isLoading } = useQuery({
+    queryKey: ["dbOptions"],
+    queryFn: () => fetchOptions("GET", "http://localhost:3000/dataOptions"),
+  });
 
   const handleShipSelection = (ship: Ship) => {
     setShipSelection(ship);
+    setRouteCoordinates([]);
   };
 
   const handleDestination = (destination: Destination) => {
     setDestination(destination);
+    setRouteCoordinates([]);
   };
 
   const fetchData = async () => {
@@ -60,15 +71,16 @@ function App() {
         },
       };
 
-      const { data } = await axios.post(
+      const { route, routeInfo } = await fetchOptions(
+        "POST",
         "http://localhost:3000/getRoute",
         coordinates
       );
 
-      setRouteCoordinates(data.route);
-      setRouteTextInfo(data.routeInfo);
+      setRouteCoordinates(route);
+      setRouteTextInfo(routeInfo);
     } catch (err) {
-      setError(err);
+      setError(true);
     }
   };
 
@@ -91,35 +103,46 @@ function App() {
           </div>
         </div>
         <div className="flex flex-col items-center">
-          {!error ? (
-            <div className="flex">
-              <Dropdown
-                value={shipSelection}
-                options={vessels}
-                handleSelect={handleShipSelection}
-                placeHolder={"Select A Vessel..."}
-              />
-              <Dropdown
-                value={destination}
-                options={ports}
-                handleSelect={handleDestination}
-                placeHolder={"Select A Port..."}
-              />
-            </div>
-          ) : (
-            <p>We are experiencing some difficulties</p>
+          {isLoading && (
+            <DNA
+              visible={true}
+              height="80"
+              width="80"
+              ariaLabel="dna-loading"
+              wrapperStyle={{}}
+              wrapperClass="dna-wrapper"
+            />
           )}
-          <div>
-            <button
-              className={`bg-blue-400 p-3 m-2 border w-80 border-green-700 hover:bg-blue-600 shadow-sm ${
-                disabled && "opacity-50 cursor-not-allowed"
-              }`}
-              onClick={fetchData}
-              disabled={disabled}
-            >
-              Request route
-            </button>
-          </div>
+          {error && <p>We are experiencing some difficulties</p>}
+          {!error && !isLoading && (
+            <div>
+              <div className="flex">
+                <Dropdown
+                  value={shipSelection}
+                  options={dbOptions?.vessels || []}
+                  handleSelect={handleShipSelection}
+                  placeHolder={"Select A Vessel..."}
+                />
+                <Dropdown
+                  value={destination}
+                  options={dbOptions?.ports || []}
+                  handleSelect={handleDestination}
+                  placeHolder={"Select A Port..."}
+                />
+              </div>
+              <div>
+                <button
+                  className={`bg-blue-400 p-3 m-2 border w-80 border-green-700 hover:bg-blue-600 shadow-sm ${
+                    disabled && "opacity-50 cursor-not-allowed"
+                  }`}
+                  onClick={fetchData}
+                  disabled={disabled}
+                >
+                  Request route
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="col-span-7 h-screen	">
@@ -141,7 +164,7 @@ function App() {
 export default App;
 
 //Todos:
-//Fetch data function could be combined to reusable function
+//Can fetch be done more elegantly ? combined ? usequery for both ? or fine as is ?
 //Animate Path
 //"Cards" in routeInformation could be reusable components
-//Fix positioning of points in rare instances
+//TS on backend
