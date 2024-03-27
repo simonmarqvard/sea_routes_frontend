@@ -4,7 +4,7 @@ import type { Ship } from "../api/Ship";
 import type { Destination } from "../api/Destination";
 
 interface RouteInformationProps {
-  routeTextInfo: RouteTextInfo | {};
+  routeTextInfo: RouteTextInfo | null;
   shipSelection: Ship | null;
   destination: Destination | null;
 }
@@ -14,7 +14,10 @@ const RouteInformation = ({
   shipSelection,
   destination,
 }: RouteInformationProps) => {
-  const { duration } = routeTextInfo as RouteTextInfo;
+  let duration = null;
+  if (routeTextInfo?.duration) {
+    duration = routeTextInfo.duration;
+  }
 
   const showShipInfo = shipSelection && (
     <div className="flex flex-col justify-center items-center p-2 border m-1 bg-blue-100">

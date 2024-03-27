@@ -13,7 +13,9 @@ function App() {
   const [shipSelection, setShipSelection] = useState<Ship | null>(null);
   const [destination, setDestination] = useState<Destination | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<number[][]>([]);
-  const [routeTextInfo, setRouteTextInfo] = useState<RouteTextInfo | {}>({});
+  const [routeTextInfo, setRouteTextInfo] = useState<RouteTextInfo | null>(
+    null
+  );
   const [error, setError] = useState<false | true>(false);
 
   const fetchOptions = async (protocol: string, url: string, postData = {}) => {
@@ -47,11 +49,13 @@ function App() {
   const handleShipSelection = (ship: Ship) => {
     setShipSelection(ship);
     setRouteCoordinates([]);
+    setRouteTextInfo(null);
   };
 
   const handleDestination = (destination: Destination) => {
     setDestination(destination);
     setRouteCoordinates([]);
+    setRouteTextInfo(null);
   };
 
   const fetchData = async () => {
@@ -152,7 +156,7 @@ function App() {
           destination={destination}
         />
         <RouteInformation
-          routeTextInfo={routeTextInfo}
+          routeTextInfo={routeTextInfo || null}
           shipSelection={shipSelection}
           destination={destination}
         />
